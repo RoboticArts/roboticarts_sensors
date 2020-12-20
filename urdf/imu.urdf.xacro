@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<robot name="sensor_imu" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<!-- - - - - - - - - - - - - - IMU SENSOR - - - - - - - - - - - - - -->
+
+  <xacro:macro name ="sensor_imu" params="prefix prefix_topic:='imu/data' parent use_sim *origin">
+
+    <!-- IMU Link is the standard mounting position for the UM6 IMU.-->
+    <link name="${prefix}link"/>
+
+    <joint name="${prefix}joint" type="fixed">
+        <axis xyz="0 1 0" />
+        <xacro:insert_block name="origin" />
+        <parent link="${parent}"/>
+        <child link="${prefix}link"/>
+    </joint>
+
+    <!-- rplidar IMU sensor for simulation -->
+    <xacro:if value="$(arg use_sim)">
+      <xacro:sensor_imu_gazebo/>
+    </xacro:if>
+
+  </xacro:macro>
+
+<!-- - - - - - - - - - - - - - IMU GAZEBO - - - - - - - - - - - - - -->
+
+  <xacro:macro name="sensor_imu_gazebo">
+
+    <gazebo>  
+      <plugin name="${prefix}imu_controller" filename="libhector_gazebo_ros_imu.so">
+       
+        <updateRate>50.0</updateRate>
+        <bodyName>${parent}</bodyName>
+        <topicName>${prefix_topic}</topicName>
+        <accelDrift>0.005 0.005 0.005</accelDrift>
+        <accelGaussianNoise>0.005 0.005 0.005</accelGaussianNoise>
+        <rateDrift>0.005 0.005 0.005 </rateDrift>
+        <rateGaussianNoise>0.005 0.005 0.005 </rateGaussianNoise>
+        <headingDrift>0.005</headingDrift>
+        <headingGaussianNoise>0.005</headingGaussianNoise>
+    </plugin> 
+
+    </gazebo>
+
+
+  </xacro:macro>
+
+
+</robot>
