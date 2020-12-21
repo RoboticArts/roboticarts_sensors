@@ -27,7 +27,7 @@
   <xacro:macro name="sensor_imu_gazebo">
 
     <gazebo>  
-      <plugin name="${prefix}imu_controller" filename="libhector_gazebo_ros_imu.so">
+      <plugin name="${prefix}imu_controller" filename="libgazebo_ros_imu.so">
        
         <updateRate>50.0</updateRate>
         <bodyName>${parent}</bodyName>
