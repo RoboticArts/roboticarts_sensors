@@ -15,7 +15,7 @@
     </joint>
 
     <!-- IMU sensor for simulation -->
-    <xacro:if value="$(arg use_sim)">
+    <xacro:if value="${use_sim}">
       <xacro:sensor_imu_gazebo/>
     </xacro:if>
 

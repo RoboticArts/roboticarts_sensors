@@ -100,7 +100,7 @@
 
 	
 		<!-- Kinect sensor for simulation -->
-    <xacro:if value="$(arg use_sim)">
+    <xacro:if value="${use_sim}">
       <sensor_kinect_gazebo/>
     </xacro:if>
 
