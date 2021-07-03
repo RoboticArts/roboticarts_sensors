@@ -4,7 +4,7 @@
 
 <!-- - - - - - - - - - - - - - RPLIDAR SENSOR - - - - - - - - - - - - - -->
 
-  <xacro:macro name ="sensor_ydlidar_x2" params="prefix prefix_topic:='front_laser/scan' use_sim parent *origin">
+  <xacro:macro name ="sensor_ydlidar_x2" params="prefix prefix_topic:='front_laser/scan' use_sim gpu_sim='false' parent *origin">
 
     <link name="${prefix}link">
 
@@ -38,7 +38,7 @@
     </joint>
 
 		<!-- ydlidar x2 sensor for simulation -->
-    <xacro:if value="$(arg use_sim)">
+    <xacro:if value="${use_sim}">
       <xacro:sensor_ydlidar_x2_gazebo/>
     </xacro:if>
 
@@ -49,8 +49,18 @@
 
   <xacro:macro name="sensor_ydlidar_x2_gazebo">
 
+    <xacro:if value="${gpu_sim}">
+        <xacro:property name="ray_type" value="gpu_ray" />
+        <xacro:property name="plugin_filename" value="libgazebo_ros_gpu_laser.so" />
+      </xacro:if>
+
+      <xacro:unless value="${gpu_sim}">
+        <xacro:property name="ray_type" value="ray" />
+        <xacro:property name="plugin_filename" value="libgazebo_ros_laser.so" />
+    </xacro:unless>
+
     <gazebo reference="${prefix}link">
-      <sensor type="ray" name="${prefix}sensor">
+      <sensor type="${ray_type}" name="${prefix}sensor">
         <pose>0 0 0 0 0 0</pose>
         <visualize>false</visualize>
         <update_rate>10</update_rate>
@@ -74,7 +84,7 @@
             <stddev>0.01</stddev>
           </noise>
         </ray>
-        <plugin name="${prefix}controller" filename="libgazebo_ros_laser.so">
+        <plugin name="${prefix}controller" filename="${plugin_filename}">
           <topicName>${prefix_topic}</topicName>
           <frameName>/${prefix}link</frameName>
         </plugin>
